@@ -1,0 +1,241 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>reveal.js – The HTML Presentation Framework</title>
+<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+<meta name="author" content="Hakim El Hattab">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="css/reveal.css">
+<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="lib/css/zenburn.css">
+
+
+<!-- Printing and PDF exports -->
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<div class="reveal">
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+<section>
+    <h1>Hi!</h1>
+    <p>I'm Fábio!</p>
+    <p>This is a scary, overly technical talk.</p>
+    <p>Grab a beer so that stuff makes more sense!</p>
+</section>
+
+<section>
+    <h1>I'm Fábio</h1>
+    <img src="fabio.jpg" style="height: 65vh">
+</section>
+
+<section>
+    <h1>I'm Fábio</h1>
+    <img src="yld.jpg">
+</section>
+
+<section>
+</section>
+
+<section>
+    <h2>Does anyone know this language?</h2>
+<pre contenteditable>
+function foo($thing) {
+    return $thing + 1;
+}
+</pre>
+</section>
+
+<section>
+    <h2>How about this one?<br>What language is this?</h2>
+<pre contenteditable>
+function main() {
+  return 0;
+}
+</pre>
+</section>
+
+<section>
+    <h2>Anyways</h2>
+    <p><small>(BTW, in chinese, the word for "programs that are valid in several programming languages" is the same as the word for "boring")</small></p>
+</section>
+
+<section>
+    <h2>Enter js2cpp</h2>
+    <p>(pronounced js2cpp)</p>
+    <ul>
+        <li>A JS to C++ transpiler</li>
+        <li class="fragment">With numbers, strings, first-class functions, closures, objects</li>
+        <li class="fragment">...and some more stuff</li>
+        <li class="fragment">I am so very sorry.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>But why?</h2>
+    <img src="./y-u-do-dis">
+</section>
+
+<section>
+    <h2>But why?</h2>
+    <li class="fragment">Lol idk education and stuffs</li>
+    <li class="fragment">Embedded systems and stuffs</li>
+</section>
+
+<section>
+    <h2>Wtf, how does it c++?</h2>
+    <p>I mean, you just have to write <code>int</code> before everything right?</p>
+</section>
+
+<section>
+    <h2>Wtf, how does it c++?</h2>
+    <ul>
+        <li>(totally unexpected) No!</li>
+        <li class="fragment">To transpile to c++ you need to know the types of everything ahead of time.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Wtf, how does it c++?</h2>
+    <ul>
+        <li>
+            This is especially hard when variables have 2 different types in their lifetime.
+            <pre class="fragment"><code>
+var foo = 6
+foo = 'trolololo'
+return foo
+            </code></pre>
+        </li>
+        <li class="fragment">Luckily the excellent tern.js project has this all figured out!</li>
+    </ul>
+</section>
+
+<section>
+    <h2>So, how would you actually do this?</h2>
+    <ul>
+        <li>Not so hard. I'm parsing javascript with <code>acorn</code></li>
+        <li class="fragment">Transforming the parts that are different (with <code>estraverse.replace</code>)</li>
+        <li class="fragment">
+            Some of these transforms will return some C by doing some smarts and calling into themselves
+        </li>
+    </ul>
+</section>
+
+<section>
+<section>
+    <h2>So, how would you actually do this?</h2>
+    <ul>
+        <li>
+            For example, this is how FunctionDeclaration is transformed
+            <pre>
+function <span style="color:hotpink">transformStuff</span>(syntaxTree) {<span class="fragment">
+  estraverse.replace(syntaxTree, {</span><span class="fragment">
+    leave: function (node, parent) {
+      if (node.type === 'FunctionDeclaration') {<span class="fragment">
+        var retType = goAskTernLolIDunno(node)  <span style="color:green">// ¯\_(ツ)_/¯</span></span><span class="fragment">
+        var funcBody = escodegen.generate(node.body)</span><span class="fragment">
+        var funcParams = node.arguments
+            .map(<span style="color:hotpink">paramsToCpp</span>)</span><span class="fragment">
+        funcParams = '(' + funcParams + ')' </span><span class="fragment">
+        return retType + ' ' + node.id.name + funcParams + ' ' + funcBody </span>
+            </pre>
+        </li>
+    </ul>
+</section>
+<section>
+    <h2>Wait, is that escodegen?</h2>
+    <ul>
+        <li>Yes, I found a way to hack through it and display whatever I wanted. The previous slide is an oversimplification.</li>
+        <li class="fragment">
+            The beautiful part is that escodegen can already generate most of the c++ syntax.</li>
+    </ul>
+</section>
+
+</section>
+
+<section>
+    <h2>So, how would you actually do this?</h2>
+    <ul>
+        <li>
+            Sometimes, you need to store things in objects! To implement them I stole an idea from V8: hidden classes!
+        </li>
+        <li class="fragment">Given an object, tern knows what its properties are and I can generate an appropriate class.</li>
+    <p class="fragment">Take "<code>var x = {}; x.y = 6; x.z = 10;</code>"</p>
+    </ul>
+    <pre class="fragment"><code>struct FakeClass_0:public FKClass {
+    double y;                      
+    double z;                      
+    FakeClass_0(){}                
+};</code></pre>
+</section>
+
+<section>
+    <h2>Of course, this is not all</h2>
+    <p>What we've just seen is the simplest part of js2cpp, generation.</p>
+    <p>More complicated stuff exists on the github repo!</p>
+</section>
+
+<section>
+    <h2>Demo time!</h2>
+    <ul>
+        <li>Pray to demo gods</li>
+        <li>Show you some running transpiled code</li>
+        <li>EPIC FIB() BENCHMARK</li>
+    </ul>
+</section>
+
+<section>
+    <h2>What's the future for js2cpp?</h2>
+    <ul>
+        <li>The future of js2cpp is closely related to its sister project, <strong>dumbjs</strong>.</li>
+        <li class="fragment">Moving forward I wish to implement constructors, <code>this</code>, <code>arguments</code>, generators, etc.</li>
+        <li class="fragment">This is going to happen in the dumbjs project, which is a bunch of small, well-defined javascript transformers instead of a language transpiler.</li>
+        <li class="fragment">Garbage collection! Exactly 2 days after everyone stops laughing.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>fin.</h2>
+    <p>Questions?</p>
+</section>
+
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available at:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
+
+    transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+    // Optional reveal.js plugins
+    dependencies: [
+        { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'plugin/zoom-js/zoom.js', async: true },
+        { src: 'plugin/notes/notes.js', async: true }
+    ]
+});
+</script>
