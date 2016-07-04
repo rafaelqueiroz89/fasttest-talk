@@ -25,188 +25,250 @@ link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' 
 document.getElementsByTagName( 'head' )[0].appendChild( link );
 </script>
 
+<style>
+code {
+    background: #111;
+    border-radius: 0.5vh;
+    font-size: 0.9em !important;
+    padding: 0.1em 0.25em !important;
+}
+li[heart] {
+    list-style: none;
+    margin-left: -1em;
+}
+li[heart]::before {
+    content: '♥';
+    margin-right: 0.42em;
+    color: #ee1111;
+}
+li[fail] {
+    list-style: none;
+    margin-left: -1em;
+}
+li[fail]::before {
+    content: '×';
+    font-weight: bold;
+    margin-right: 0.42em;
+}
+heart {
+    display: inline;
+}
+heart::before {
+    content: '♥';
+    color: #ee1111;
+}
+</style>
+
 <div class="reveal">
 <!-- Any section element inside of this container is displayed as a slide -->
 <div class="slides">
 <section>
-    <h1>Hi!</h1>
-    <p>I'm Fábio!</p>
-    <p>This is a scary, overly technical talk.</p>
-    <p>Grab a beer so that stuff makes more sense!</p>
+    <h1>React, GraphQL and Relay in practice</h1>
+    <h2>Or, how do these new-fangled things fare in production</h2>
 </section>
 
 <section>
     <h1>I'm Fábio</h1>
-    <img src="fabio.jpg" style="height: 65vh">
+    <div style="float: left; width: 50%">
+        <p>Looks like this
+        <img src="http://react.london/assets/img/Speakers/fabiosantosart.jpg" style="width: 80%">
+        <p style="font-size: 0.5em; color:gray;">you know, for reference
+    </div>
+    <div style="float:left; text-align: left; width: 50%; font-size: 0.8em">
+        <p>&nbsp;</p>
+        <p><a href="http://github.com/fabiosantoscode">github.com/fabiosantoscode</a></p>
+        <p><a href="http://npmjs.com/~fabiosantoscode">npmjs.com/~fabiosantoscode</a></p>
+        <p>Consultant</p>
+        <p>works for <a href="#">yld.io</a></p>
+        <p><heart/> Likes JavaScript</p>
+        <p><heart/> Likes Building compilers</p>
+        <p><heart/> Had the biggest module on npm</p>
+    </div>
 </section>
 
 <section>
-    <h1>I'm Fábio</h1>
-    <img src="yld.jpg">
-</section>
-
-<section>
-</section>
-
-<section>
-    <h2>Does anyone know this language?</h2>
-<pre contenteditable>
-function foo($thing) {
-    return $thing + 1;
-}
-</pre>
-</section>
-
-<section>
-    <h2>How about this one?<br>What language is this?</h2>
-<pre contenteditable>
-function main() {
-  return 0;
-}
-</pre>
-</section>
-
-<section>
-    <h2>Anyways</h2>
-    <p><small>(BTW, in chinese, the word for "programs that are valid in several programming languages" is the same as the word for "boring")</small></p>
-</section>
-
-<section>
-    <h2>Enter js2cpp</h2>
-    <p>(pronounced js2cpp)</p>
+    <h2>React, GraphQL and Relay in practice</h2>
+    <p>Your mileage may vary</p>
     <ul>
-        <li>A JS to C++ transpiler</li>
-        <li class="fragment">With numbers, strings, first-class functions, closures, objects</li>
-        <li class="fragment">...and some more stuff</li>
-        <li class="fragment">I am so very sorry.</li>
+        <p><heart/> React - Isomorphism, building a single-page application, and third-party libraries</p>
+        <p><heart/> GraphQL  - What it's good for, and random tips</p>
+        <p><heart/> Relay - What is it good for, that memory leak we had, and other problems</p>
     </ul>
 </section>
 
 <section>
-    <h2>But why?</h2>
-    <img src="./y-u-do-dis">
-</section>
-
-<section>
-    <h2>But why?</h2>
-    <li class="fragment">Lol idk education and stuffs</li>
-    <li class="fragment">Embedded systems and stuffs</li>
-</section>
-
-<section>
-    <h2>Wtf, how does it c++?</h2>
-    <p>I mean, you just have to write <code>int</code> before everything right?</p>
-</section>
-
-<section>
-    <h2>Wtf, how does it c++?</h2>
+    <h1>React <heart/> CSS</h1>
     <ul>
-        <li>(totally unexpected) No!</li>
-        <li class="fragment">To transpile to c++ you need to know the types of everything ahead of time.</li>
+        <li>We didn't jump on the inline styles bandwagon</li>
+        <li>It went quite well. Our designers didn't want to touch our ugly javascript, but they sure helped with CSS.</li>
+        <li>Just use BEM to choose classnames, organise your CSS well, and avoid specificity of 2 or more.</li>
+        <li>We kept our CSS small and put it all in an inline <code>&lt;style></code> tag on top of the page. Boom! One request to render, no cache WTFs. And GZIP loved it.</li>
     </ul>
 </section>
 
 <section>
-    <h2>Wtf, how does it c++?</h2>
+    <h1>React <heart/> Isomorphic</h1>
     <ul>
-        <li>
-            This is especially hard when variables have 2 different types in their lifetime.
-            <pre class="fragment"><code>
-var foo = 6
-foo = 'trolololo'
-return foo
-            </code></pre>
-        </li>
-        <li class="fragment">Luckily the excellent tern.js project has this all figured out!</li>
+        <li>You write some code, and it works on the client and server</li>
+        <li>Sprinkle a few <code>typeof window !== 'undefined'</code></li>
+        <li>Client works without javascript, you just have to use &lt;a&gt;</li>
+        <li heart>Super straightforward</li>
     </ul>
 </section>
 
 <section>
-    <h2>So, how would you actually do this?</h2>
+    <h1>React <heart/> SPA</h1>
+    <p>Single-page applications give you tons of performance but pay a high toll</p>
     <ul>
-        <li>Not so hard. I'm parsing javascript with <code>acorn</code></li>
-        <li class="fragment">Transforming the parts that are different (with <code>estraverse.replace</code>)</li>
-        <li class="fragment">
-            Some of these transforms will return some C by doing some smarts and calling into themselves
-        </li>
+        <li heart>React made it super-easy</li>
+        <li heart>Performance was awesome</li>
+        <li fail>Third party code mostly has no idea of what is happening</li>
+        <li fail>Super hard to explain why things work when you refresh but not when you navigate to places</li>
     </ul>
 </section>
 
 <section>
-<section>
-    <h2>So, how would you actually do this?</h2>
+    <h1>React <heart /> third parties</h1>
     <ul>
-        <li>
-            For example, this is how FunctionDeclaration is transformed
-            <pre>
-function <span style="color:hotpink">transformStuff</span>(syntaxTree) {<span class="fragment">
-  estraverse.replace(syntaxTree, {</span><span class="fragment">
-    leave: function (node, parent) {
-      if (node.type === 'FunctionDeclaration') {<span class="fragment">
-        var retType = goAskTernLolIDunno(node)  <span style="color:green">// ¯\_(ツ)_/¯</span></span><span class="fragment">
-        var funcBody = escodegen.generate(node.body)</span><span class="fragment">
-        var funcParams = node.arguments
-            .map(<span style="color:hotpink">paramsToCpp</span>)</span><span class="fragment">
-        funcParams = '(' + funcParams + ')' </span><span class="fragment">
-        return retType + ' ' + node.id.name + funcParams + ' ' + funcBody </span>
-            </pre>
-        </li>
-    </ul>
-</section>
-<section>
-    <h2>Wait, is that escodegen?</h2>
-    <ul>
-        <li>Yes, I found a way to hack through it and display whatever I wanted. The previous slide is an oversimplification.</li>
-        <li class="fragment">
-            The beautiful part is that escodegen can already generate most of the c++ syntax.</li>
-    </ul>
-</section>
-
-</section>
-
-<section>
-    <h2>So, how would you actually do this?</h2>
-    <ul>
-        <li>
-            Sometimes, you need to store things in objects! To implement them I stole an idea from V8: hidden classes!
-        </li>
-        <li class="fragment">Given an object, tern knows what its properties are and I can generate an appropriate class.</li>
-    <p class="fragment">Take "<code>var x = {}; x.y = 6; x.z = 10;</code>"</p>
-    </ul>
-    <pre class="fragment"><code>struct FakeClass_0:public FKClass {
-    double y;                      
-    double z;                      
-    FakeClass_0(){}                
-};</code></pre>
-</section>
-
-<section>
-    <h2>Of course, this is not all</h2>
-    <p>What we've just seen is the simplest part of js2cpp, generation.</p>
-    <p>More complicated stuff exists on the github repo!</p>
-</section>
-
-<section>
-    <h2>Demo time!</h2>
-    <ul>
-        <li>Pray to demo gods</li>
-        <li>Show you some running transpiled code</li>
-        <li>EPIC FIB() BENCHMARK</li>
+        <li heart>npmjs.com/promisescript was a HUGE help</li>
+        <li heart>npmjs.com/react-i13n from Yahoo helped us integrate with analytics</li>
+        <li fail>Synchronous third party libraries will kill your hard-earned perf</li>
+        <li fail>Some don't know when to go away</li>
+        <li fail>Some don't know what is a page change</li>
+        <li fail>Google ads have to load all at once if you need to serve road blocks, good luck keeping your code sane after that 💀💀💀</li>
     </ul>
 </section>
 
 <section>
-    <h2>What's the future for js2cpp?</h2>
+    <h2>E2E tests <heart /> third parties</h2>
     <ul>
-        <li>The future of js2cpp is closely related to its sister project, <strong>dumbjs</strong>.</li>
-        <li class="fragment">Moving forward I wish to implement constructors, <code>this</code>, <code>arguments</code>, generators, etc.</li>
-        <li class="fragment">This is going to happen in the dumbjs project, which is a bunch of small, well-defined javascript transformers instead of a language transpiler.</li>
-        <li class="fragment">Garbage collection! Exactly 2 days after everyone stops laughing.</li>
+        <li>Use promisescript and get some loaders in the same module</li>
+        <pre><code>
+            var once = require('once')
+            var promisescript = require('promisescript')
+            module.exports.googleCustomSearch = once(() =>
+                new Promise((resolve) => {
+                    window.__gcse = { ... }
+                    promisescript({...})
+                })
+            )
+            module.exports.omniture = once(() =>
+                promisescript(...).then(window.s_gi))
+        </code></pre>
+        <li>You can deal with weird dependencies between them in this file</li>
+        <li>Promises don't care if something is in yet. Just then it: <code>thirdParty().then(whatever)</code></li>
     </ul>
 </section>
 
 <section>
-    <h2>fin.</h2>
+    <h2>E2E tests <heart /> third parties</h2>
+    <ul>
+        <li>in your client entry point, hide your app behind a callback</li>
+        <pre><code>
+            if (/&TEST=1/.test(location.href)) {
+                window.loadThirdParties = Promise.all([
+                    thirdParty1(),
+                    thirdParty2(),
+                    ...
+                ])
+                window.startApplication = startApplication
+            } else {
+                startApplication()
+            }
+            function startApplication() {
+                ReactDOM.render(...)
+            }
+        </code></pre>
+    </ul>
+</section>
+
+<section>
+    <h2>E2E tests <heart /> third parties</h2>
+    <ul>
+        <li>in your selenium-driven tests, load the actual third parties and infect them with spies</li>
+        <pre><code>
+            hopefullyNotNightwatchJs.runOnClient((done) => {
+                window.loadThirdParties().then(() => {
+                    sinon.spy(window, 's_gi')
+                    window.startApplication()
+                    assert(window.s_gi.calledOnce)
+                    assert(window.s_gi.calledWith({
+                        /* the exact analytics data you expect */
+                    }))
+                }).then(done, done)
+            })
+        </code></pre>
+    </ul>
+</section>
+
+<section>
+    <h1>GraphQL <heart /> </h1>
+    <ul class="fragment">
+        <li heart>Just awesome</li>
+        <div class="fragment">
+            <li heart>Has just the right amount of magic</li>
+            <li heart>Super easy way to feed the frontend with data</li>
+            <li heart>Works with any backend, including <code>return someJSON</code></li>
+            <li heart>Works for more frontends, which may do different queries</li>
+            <li heart>You need to do lookups all the time</li>
+            <li fail>One does not simply cache an arbitrary query language</li>
+            <li fail>Try explaining ops why you need to cache POST requests</li>
+        </div>
+    </ul>
+</section>
+
+<section>
+    <h2>GraphiQL <heart /> </h2>
+    <p>It's awesome. Use it for debugging and query building</p>
+    <ul>
+        <img src="/graphiql.png">
+    </ul>
+</section>
+
+<section>
+    <h2>GraphQL <heart /> random tips </h2>
+    <p>if you're using it or plan to use it</p>
+    <ul>
+        <li>Turns out you don't need to root everything in a <code>viewer</code> node (as per official example code) unless you're dealing with user data. Relay hates it.</li>
+        <li>If you're building a content-based website like ours, try to unify your types and just have Content. Your cross-page components are going to love the consistency.</li>
+        <li>Since it's not REST you can add versioning later without weird arity discussions. Just add <code>/graphql/v2</code></li>
+        <li>Use graphiql. It turns out you can <code>wget</code> their demo page and serve it in development mode. It just works.</li>
+    </ul>
+</section>
+
+<section>
+    <h1>Relay <heart /> </h1>
+    <ul>
+        <li heart>Client and the Server can use it to get data from GraphQL</li>
+        <li heart>Your code will contain declarations of data you need</li>
+        <li heart>Built-in cache</li>
+        <li heart>Everything seems to be very easy to do</li>
+        <li fail>Serverside rendering not supported natively. <span style="color:gray">You'll need isomorphic-relay-router, isomorphic-relay, and react-router-relay.</span></li>
+        <li fail>As of today, using serverside rendering implies opting into a very fast memory leak.</li>
+    </ul>
+</section>
+
+<section>
+    <h1>Relay <heart /> </h1>
+    <ul>
+        <li style="list-style: none">On the one hand...</li>
+        <li heart>Data just magically appears on the page for you to use</li>
+        <li class="fragment" style="list-style: none">On the other hand...</li>
+        <li fail class="fragment">Data just magically appears on the page for you to use</li>
+        <li class="fragment" style="list-style: none; color:gray;">The words "just" and "magically" should be triggering several alarms in your body right now</li>
+    </ul>
+</section>
+
+<section>
+    <h1>That memory leak we had <heart /></h1>
+    <ul>
+        <li heart>As soon as serverside rendering was implemented, we of course started using Relay on the server to fetch data.</li>
+        <li heart>We only got away with it because we had excellent devops.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>The end.</h2>
     <p>Questions?</p>
 </section>
 
