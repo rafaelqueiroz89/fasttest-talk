@@ -325,23 +325,21 @@ heart::before {
 
 <section>
   <h1>Relay <heart /> </h1>
-  <p>Here's a comment section component with a declaration of what data it needs</p>
+  <p>Here's a reusable comment section component with a declaration of what data it needs</p>
 <pre style="height: 50vh"><code style="height: 50vh; max-height: unset">  function CommentsList(props) {
-    var comments = props.theList.comments
-      .map(c => (&lt;CommentListItem comment={c} />))
-    return (
-      <div>
-        {comments}
-      </div>
-    )
+    var comments = props.contentItem.comments
+      .map((c, i) => (&lt;CommentListItem comment={c} key={c.id} />))
+
+    return (<div>{comments}</div>)
   }
   module.exports = Relay.createContainer(CommentsList, {
     fragments: {
-      theList: () => Relay.QL`
+      contentItem: () => Relay.QL`
         fragment on Content {
           id,
           commentCount,
           comments {
+            id,
             ${ CommentListItem.getFragment('comment') }
           }
         }
@@ -350,6 +348,32 @@ heart::before {
   })
 </code></pre>
 </section>
+
+<section>
+  <h1>Relay <heart /> </h1>
+  <p>Here's a reusable comment item Relay container</p>
+<pre style="height: 55vh"><code style="height: 55vh; max-height: unset">  function Comment(props) {
+    return (
+      &lt;div className="comment__container">
+        &lt;UserInfo user={props.comment.author} />
+        {props.comment.text}
+      &lt;/div>
+    )
+  }
+  module.exports = Relay.createContainer(CommentsList, {
+    fragments: {
+      comment: () => Relay.QL`
+        fragment on Comment {
+          id,
+          text,
+          author { ${ UserInfo.getFragment('user') } }
+        }
+      `
+    }
+  })
+</code></pre>
+</section>
+
 
 <section>
   <h1>Relay <heart /> </h1>
