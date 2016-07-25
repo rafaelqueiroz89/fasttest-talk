@@ -111,7 +111,7 @@ heart::before {
   <ul>
     <li>You write some code, and it works on the client and server</li>
     <li>Sprinkle a few <code>typeof window !== 'undefined'</code></li>
-    <li>Client works without javascript, you just have to use &lt;a&gt;</li>
+    <li>Client works without javascript, which is neat</li>
     <li heart>Super straightforward</li>
   </ul>
 </section>
@@ -123,7 +123,7 @@ heart::before {
     <li heart>React made it super-easy</li>
     <li heart>Performance was awesome</li>
     <li fail>Third party code mostly has no idea of what is happening</li>
-    <li fail>Super hard to explain why things work when you refresh but not when you navigate to places</li>
+    <li fail>Super hard to explain why things work when you go somewhere by URL but not when you navigate to places</li>
   </ul>
 </section>
 
@@ -131,11 +131,12 @@ heart::before {
   <h1>React <heart /> third parties</h1>
   <ul>
     <li heart>npmjs.com/promisescript was a HUGE help</li>
-    <li heart>npmjs.com/react-i13n from Yahoo helped us integrate with analytics</li>
+    <li heart>npmjs.com/react-i13n from Yahoo helped us integrate with analytics and more</li>
+    <li heart>Using <code>componentWillUnmount</code> and friends allows third parties to mess with the DOM in a pretty sane way</li>
     <li fail>Synchronous third party libraries will kill your hard-earned perf</li>
-    <li fail>Some don't know when to go away</li>
-    <li fail>Some don't know what is a page change</li>
-    <li fail>Google ads have to load all at once if you need to serve road blocks, good luck keeping your code sane after that 💀💀💀</li>
+    <li fail>Some don't know to go away</li>
+    <li fail>Most don't know what is a dynamic page change</li>
+    <li fail>Google ads have to load all at once if you need to serve road blocks 💀💀💀</li>
   </ul>
 </section>
 
@@ -212,6 +213,9 @@ heart::before {
       title,
       children {
         title
+        children {
+          title
+        }
       }
     }
   }
@@ -246,18 +250,15 @@ heart::before {
 
 <section>
   <h1>GraphQL <heart /> </h1>
-  <ul class="fragment">
-    <li heart>Just awesome</li>
-    <div class="fragment">
-      <li heart>Developing apps or websites, we always traverse graphs</li>
-      <li heart>Has just the right amount of magic</li>
-      <li heart>Super easy way to feed the frontend with data</li>
-      <li heart>Works with any backend, including <code>return someJSON</code></li>
-      <li heart>Works for more frontends, which may do different queries</li>
-      <li fail>One does not simply cache an arbitrary query language</li>
-      <li fail>To cache stuff properly, you need to propagate upstream error codes back. GraphQL always replies with 200.</li>
-      <li fail>And either cache POST requests or create custom GET-based clients</li>
-    </div>
+  <ul>
+    <li heart>Developing apps or websites, we always traverse graphs</li>
+    <li heart>Has just the right amount of magic</li>
+    <li heart>Super easy way to feed the frontend with data</li>
+    <li heart>Works with any backend, including <code>return someJSON</code></li>
+    <li heart>Works for more frontends, which may do different queries</li>
+    <li fail>One does not simply cache an arbitrary query language</li>
+    <li fail>To cache stuff properly, you need to propagate upstream error codes back. GraphQL always replies with 200.</li>
+    <li fail>And either cache POST requests or create custom GET-based clients</li>
   </ul>
 </section>
 
@@ -279,7 +280,7 @@ heart::before {
     errors: [ { message: '404 message from your code' } ]
   }
     </code></pre>
-    <p class="fragment">We didn't want partial responses so we had to read this <code>errors</code> array and inject an appropriate error code. hapi makes this easy with the onPreResponse hook.</p>
+    <p class="fragment">We didn't want partial responses so we had to read this <code>errors</code> array and fail with an error code. hapi makes this easy with the onPreResponse hook.</p>
   </ul>
 </section>
 
@@ -295,9 +296,9 @@ heart::before {
   <h2>GraphQL <heart /> and propagation </h2>
   <ul>
     <li heart>GraphQL is GREAT at fanning out to a lot of backends</li>
-    <li heart>A lot of times you want to propagate stuff on to all other backends, which changes on every request</li>
-    <li heart>Cookies, a request ID, some auth token</li>
-    <li heart>Or, you may want to pass full-fledged javascript objects with access to information about this particular request.</li>
+    <li>A lot of times you want to propagate stuff on to all other backends, which changes on every request</li>
+    <li>Cookies, a request ID, some auth token</li>
+    <li>Or, you may want to pass full-fledged javascript objects with access to information about this particular request.</li>
   </ul>
 <pre><code>
   graphqlConfig = {
@@ -404,7 +405,7 @@ heart::before {
     <li heart>In a serverside rendered application, the initial graphQL request to render the page can be inlined in the HTML. Repetitive information (menus, content you've seen, etc) is never re-fetched.</li>
   </ul>
 <pre><code>
-  &lt;script type="application/json">{Relay's cache for the initially requested page}&lt;/script>
+  &lt;script type="application/json">{Data to poison Relay's cache}&lt;/script>
 
 </code></pre>
 </section>
@@ -419,11 +420,55 @@ heart::before {
 </section>
 
 <section>
+  <h1>Relay <heart /> gems</h1>
+  <ul>
+    <li heart>This piece of code does a graphql request through Relay.</li>
+  </ul>
+  <pre><code>
+const queyGraphQL = (ql) => new Promise((resolve, reject) => {
+  const querySet = {
+    query: Relay.createQuery(ql, variables),
+  };
+  Relay.Store.primeCache(querySet, ({ done, error }) => {
+    if (done) {
+      const response = Relay.Store.readQuery(querySet.query);
+      resolve(response[0]);
+    }
+    if (error) {
+      reject(error);
+    }
+  });
+});
+  </code></pre>
+</section>
+
+<section>
+  <h1>Relay <heart /> gems</h1>
+  <ul>
+    <li heart>This piece of code performs a simple contract test to our graphQL backend.</li>
+  </ul>
+  <pre><code>
+it('should provide us with beautiful, beautiful data', () => {
+  return queryGraphQL(Relay.QL`
+    query {
+      content (path: "/actual/url/in/website") {
+        fieldWhichShouldBeTrue,
+        ${ LatestPrinted.getFragment('latestIssue') }
+      }
+    }
+  `).then((res) => {
+    fieldWhichShouldBeTrue.should.equal(true);
+  });
+});
+  </code></pre>
+</section>
+
+<section>
   <h1>That memory leak we had <heart /></h1>
   <ul>
     <li heart>As soon as serverside rendering was implemented, we of course started using Relay on the server to fetch data.</li>
-    <li heart>We decided to bet on the Relay team supporting serverside rendering eventually, given it's such a big part of react.</li>
-    <li heart>We got away with it because we had excellent devops. <span color=""</li>
+    <li heart>We decided to bet on the Relay team supporting serverside rendering eventually</li>
+    <li heart>We got away with it because we had excellent devops.</li>
   </ul>
 </section>
 
