@@ -71,7 +71,7 @@ heart::before {
   <h1>I'm Fábio</h1>
   <div style="float: left; width: 50%">
     <p>Looks like this
-    <img src="http://react.london/assets/img/Speakers/fabiosantosart.jpg" style="width: 80%">
+    <img src="https://res.cloudinary.com/red-badger-assets/image/upload/v1469025661/events/react-london-speakers/fabiosantosart.jpg" style="width: 80%">
     <p style="font-size: 0.5em; color:gray;">you know, for reference
   </div>
   <div style="float:left; text-align: left; width: 50%; font-size: 0.8em">
@@ -203,6 +203,11 @@ heart::before {
 </section>
 
 <section>
+  <h1>Time to zoom out </h1>
+  <p class="fragment"><img src="HOW THE WORLD WORKS.png" style="height: 50vh"></p>
+</section>
+
+<section>
   <h1>GraphQL <heart /> </h1>
   <p>Query all the things!</p>
   <p>Here's a query that queries the things on the homepage, their titles, their children, and their children's titles.</p>
@@ -326,6 +331,10 @@ heart::before {
 
 <section>
   <h1>Relay <heart /> </h1>
+</section>
+
+<section>
+  <h1>Relay <heart /> </h1>
   <p>Here's a reusable comment section component with a declaration of what data it needs</p>
 <pre style="height: 50vh"><code style="height: 50vh; max-height: unset">  function CommentsList(props) {
     var comments = props.contentItem.comments
@@ -385,6 +394,7 @@ heart::before {
     <li heart>Everything seems to be very easy to do</li>
     <li fail>Serverside rendering not supported natively. <span style="color:gray">You'll need isomorphic-relay-router, isomorphic-relay, and react-router-relay.</span></li>
     <li fail>As of today, using serverside rendering implies opting into a very fast memory leak.</li>
+    <li fail>Ties you into babel. 6.</li>
   </ul>
 </section>
 
