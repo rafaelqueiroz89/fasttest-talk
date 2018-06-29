@@ -15,7 +15,6 @@
 <!-- Code syntax highlighting -->
 <link rel="stylesheet" href="lib/css/zenburn.css">
 
-
 <!-- Printing and PDF exports -->
 <script>
 var link = document.createElement( 'link' );
@@ -57,439 +56,126 @@ heart::before {
   content: '♥';
   color: #ee1111;
 }
+@media print {
+  section * {
+    color: #000 !important
+  }
+  section code {
+    color: #FFF !important
+  }
+}
 </style>
 
 <div class="reveal">
 <!-- Any section element inside of this container is displayed as a slide -->
 <div class="slides">
 <section>
-  <h1>React, GraphQL and Relay in practice</h1>
-  <h2>Or, how do these new-fangled things fare in production</h2>
+  <h1>How to create a new programming language</h1>
+  <h2>Complete with a tracing JIT</h2>
 </section>
 
 <section>
   <h1>I'm Fábio</h1>
   <div style="float: left; width: 50%">
-    <p>Looks like this
+    <p>&nbsp;</p>
     <img src="fabio.jpg" style="width: 80%">
-    <p style="font-size: 0.5em; color:gray;">you know, for reference
   </div>
   <div style="float:left; text-align: left; width: 50%; font-size: 0.8em">
     <p>&nbsp;</p>
     <p><a href="http://github.com/fabiosantoscode">github.com/fabiosantoscode</a></p>
     <p><a href="http://npmjs.com/~fabiosantoscode">npmjs.com/~fabiosantoscode</a></p>
-    <p>Consultant</p>
-    <p>works for <a href="#">yld.io</a></p>
+    <p>Freelancer</p>
+    <p>terser (new uglify-es) maintainer</p>
     <p><heart/> Likes JavaScript</p>
     <p><heart/> Likes Building compilers</p>
-    <p><heart/> Had the biggest module on npm</p>
   </div>
 </section>
 
 <section>
-  <h2>React, GraphQL and Relay in practice</h2>
-  <p>Your mileage may vary</p>
+  <h1>Let's get started</h1>
+
   <ul>
-    <p><heart/> React - CSS, isomorphism, building a single-page application, and third-party libraries</p>
-    <p><heart/> GraphQL  - What it's good for, and random tips</p>
-    <p><heart/> Relay - What is it good for, that memory leak we had, and other problems</p>
+    <li>To create a language, you need to write a REPL, a CLI interface and a library file</li>
+    <li>Those, I'll leave as an exercise to the reader.
   </ul>
 </section>
 
 <section>
-  <h1>React <heart/> CSS</h1>
+  <h1>No CLI and REPL?</h1>
+  <p>No.
+  <p>Instead, I'll use <code>mocha</code> and TDD</p>
+</section>
+
+<section>
+  <h1>Let's implement the parser</h1>
   <ul>
-    <li>We didn't jump on the inline styles bandwagon</li>
-    <li>It went quite well. Our designers didn't want to touch our ugly javascript, but they sure helped with CSS.</li>
-    <li>Just use BEM to choose classnames, organise your CSS well, and avoid specificity of 2 or more.</li>
-    <li>We kept our CSS small and put it all in an inline <code>&lt;style></code> tag on top of the page. Boom! One request to render, no cache WTFs. And GZIP loved it.</li>
+    <li>Usually you'd create a recursive descent parser (eg. acorn, uglifyJS)</li>
+    <li>Or use PEGJS or some variation of lex/yacc to generate a parser for you</li>
+    <li>Our language is so BASIC that we can write a parser without recursion (<code>e9f9fc3</code>)</li>
   </ul>
 </section>
 
 <section>
-  <h1>React <heart/> Isomorphic</h1>
+  <h1>So simple?</h1>
   <ul>
-    <li>You write some code, and it works on the client and server</li>
-    <li>Sprinkle a few <code>typeof window !== 'undefined'</code></li>
-    <li>Client works without javascript, which is neat</li>
-    <li heart>Super straightforward</li>
+    <li>This is a toy/example language</li>
+    <li>Usually there's separate tokenisation and parsing steps</li>
+    <li>And you would keep the line number and column associated so you can generate good stack traces</li>
   </ul>
 </section>
 
 <section>
-  <h1>React <heart/> SPA</h1>
-  <p>Single-page applications give you tons of performance but you pay a high toll</p>
+  <h1>Let's start writing the VM part</h1>
   <ul>
-    <li heart>React made it super-easy</li>
-    <li heart>Performance was awesome</li>
-    <li fail>Third party code mostly has no idea of what is happening</li>
-    <li fail>Super hard to explain why things work when you go somewhere by URL but not when you navigate to places</li>
+    <li>We need to write a function that takes a single line of our parsed code and executes it</li>
+    <li>And a bunch of functions, one per instruction</li>
+    <li>The instruction can modify the state of the virtual machine (variables, current instruction) so we pass the state to the instruction function
+    <p><code>7b7e3d6</code>, <code>71f67c7</code>
   </ul>
 </section>
 
-<section style="font-size: 0.9em">
-  <h1>React <heart /> third parties</h1>
+<section>
+  <h1>Now let's execute our programs</h1>
   <ul>
-    <li heart>npmjs.com/promisescript was a HUGE help</li>
-    <li heart>npmjs.com/react-i13n from Yahoo helped us integrate with analytics and more</li>
-    <li heart>Using <code>componentWillUnmount</code> and friends allows third parties to mess with the DOM in a pretty sane way</li>
-    <li fail>Synchronous third party libraries will kill your hard-earned perf</li>
-    <li fail>Some don't know to go away</li>
-    <li fail>Most don't know what is a dynamic page change</li>
-    <li fail>Google ads have to load all at once if you need to serve road blocks 💀💀💀</li>
-  </ul>
-</section>
-
-<section style="font-size: 0.9em">
-  <h2>E2E tests <heart /> third parties</h2>
-  <ul>
-    <li>Use promisescript and get some loaders in the same module</li>
-    <pre><code>
-      var once = require('once')
-      var promisescript = require('promisescript')
-      module.exports.googleCustomSearch = once(() =>
-        new Promise((resolve) => {
-          window.__gcse = { ... }
-          promisescript({...})
-        })
-      )
-      module.exports.omniture = once(() =>
-        promisescript(...).then(window.s_gi))
-    </code></pre>
-    <li>You can deal with weird dependencies between them in this file</li>
-    <li>Promises don't care if something is in yet. Just then it: <code>thirdParty().then(whatever)</code></li>
+    <li>We just create the starting VM state, then run each instruction inside a for loop (<code>8114317</code>)</li>
   </ul>
 </section>
 
 <section>
-  <h2>E2E tests <heart /> third parties</h2>
-  <ul>
-    <li>in your client entry point, hide your app behind a callback</li>
-    <pre><code>
-      if (/&TEST=1/.test(location.href)) {
-        window.loadThirdParties = Promise.all([
-          thirdParty1(),
-          thirdParty2(),
-          ...
-        ])
-        window.startApplication = startApplication
-      } else {
-        startApplication()
-      }
-      function startApplication() {
-        ReactDOM.render(...)
-      }
-    </code></pre>
-  </ul>
+  <h1>Now for the tracing JIT part</h1>
+  <p>There's some theory here
+  <p><img src="breathing-intensifies.jpg"></p>
 </section>
 
 <section>
-  <h2>E2E tests <heart /> third parties</h2>
-  <ul>
-    <li>in your selenium-driven tests, load the actual third parties and infect them with spies</li>
-    <pre><code>
-      hopefullyNotNightwatchJs.runOnClient((done) => {
-        window.loadThirdParties().then(() => {
-          sinon.spy(window, 's_gi')
-          window.startApplication()
-          assert(window.s_gi.calledOnce)
-          assert(window.s_gi.calledWith({
-            /* the exact analytics data you expect */
-          }))
-        }).then(done, done)
-      })
-    </code></pre>
-  </ul>
+  <h1>What's a tracing JIT?</h1>
+  <blockquote>
+    Tracing just-in-time compilation is a technique used by virtual machines to optimize the execution of a program at runtime. (...)
+  </blockquote>
+  <p><a href=https://en.wikipedia.org/wiki/Tracing_just-in-time_compilation>(wikipedia)</a></p>
 </section>
 
 <section>
-  <h1>Time to zoom out </h1>
-  <p class="fragment"><img src="HOW THE WORLD WORKS.png" style="height: 50vh"></p>
-</section>
-
-<section>
-  <h1>GraphQL <heart /> </h1>
-  <p>Query all the things!</p>
-  <p>Here's a query that queries the things on the homepage, their titles, their children, and their children's titles.</p>
-  <pre><code>
-  {
-    # stuff to put on the home page
-    content(url: "/") {
-      title,
-      children {
-        title
-        children {
-          title
-        }
-      }
-    }
-  }
-  </code></pre>
-</section>
-
-<section>
-  <h1>GraphQL <heart /> </h1>
-<pre style="height: 55vh"><code style="height: 55vh; max-height: unset">  module.exports = new GraphQLSchema({
-    name: 'query',
-    fields: () => ({
-      content: {
-        type: ContentType,
-        args: { url: { type: GraphQLString } },
-        resolve: (self, { url }) => myGetters.getContentByURL(url)
-      }
-    })
-  })
-  var ContentType = new GraphQLObjectType({
-    name: 'Content',
-    fields: () => ({
-      id: { type: GraphQLInt },
-      title: { type: GraphQLString },
-      children: {
-        type: new GraphQLList(ContentType),
-        resolve: (self) => myGetters.getChildContentOf(self.id)
-      }
-    })
-  })
-  </code></pre>
-</section>
-
-<section>
-  <h1>GraphQL <heart /> </h1>
-  <ul>
-    <li heart>Developing apps or websites, we always traverse graphs</li>
-    <li heart>Has just the right amount of magic</li>
-    <li heart>Super easy way to feed the frontend with data</li>
-    <li heart>Works with any backend, including <code>return someJSON</code></li>
-    <li heart>Works for more frontends, which may do different queries</li>
-    <li fail>One does not simply cache an arbitrary query language</li>
-    <li fail>To cache stuff properly, you need to propagate upstream error codes back. GraphQL always replies with 200.</li>
-    <li fail>And either cache POST requests or create custom GET-based clients</li>
-  </ul>
-</section>
-
-<section style="font-size: 0.85em">
-  <h1>GraphQL <heart /> Partial</h1>
-  <p>Disclaimer: we chose not to use this</p>
-  <ul class="fragment">
-    <li heart>GraphQL does partial responses out of the box, in a very intuitive way. Just reject a promise or throw an error.</li>
-    <pre><code>  {
-    postThatWorks: post(id: "12345") { ... }
-    postThatFails: post(id: "-1") { ... }
-  }
-  // the above query responds...
-  {
-    data: {
-      postThatWorks: { ... },
-      postThatFails: null
-    },
-    errors: [ { message: '404 message from your code' } ]
-  }
-    </code></pre>
-    <p class="fragment">We didn't want partial responses so we had to read this <code>errors</code> array and fail with an error code. hapi makes this easy with the onPreResponse hook.</p>
-  </ul>
-</section>
-
-<section>
-  <h2>GraphiQL <heart /> </h2>
-  <p>It's awesome. Use it for debugging and query building</p>
-  <ul>
-    <img src="graphiql.png">
-  </ul>
-</section>
-
-<section>
-  <h2>GraphQL <heart /> and propagation </h2>
-  <ul>
-    <li heart>GraphQL is GREAT at fanning out to a lot of backends</li>
-    <li>A lot of times you want to propagate stuff on to all other backends, which changes on every request</li>
-    <li>Cookies, a request ID, some auth token</li>
-    <li>Or, you may want to pass full-fledged javascript objects with access to information about this particular request.</li>
-  </ul>
-<pre><code>
-  graphqlConfig = {
-    query: (request) => ({
-      schema: graphQLSchema,
-      rootValue: {
-        requestId: request.id,
-        log: (...args) => request.log(...args),
-      }
-    }),
-    route: // ...
-</code></pre>
-</section>
-
-<section>
-  <h2>GraphQL <heart /> random tips </h2>
-  <p>if you're using it or plan to use it</p>
-  <ul>
-    <li>As your queries start doing more and more requests, you're going to need to use retries. Otherwise, just one of your requests failing causes everything to go awry.</li>
-    <li>If you're building a content-based website like ours, try to unify your types and just have Content. Your cross-page components are going to love the consistency.</li>
-    <li>Forget versioning for now, you can <code>/graphql/v2</code> later.</li>
-    <li>Use graphiql. It turns out you can <code>wget</code> their demo page and serve it in development mode. It just works.</li>
-  </ul>
-</section>
-
-<section>
-  <h1>Relay <heart /> </h1>
-</section>
-
-<section>
-  <h1>Relay <heart /> </h1>
-  <p>Here's a reusable comment section component with a declaration of what data it needs</p>
-<pre style="height: 50vh"><code style="height: 50vh; max-height: unset">  function CommentsList(props) {
-    var comments = props.contentItem.comments
-      .map((c, i) => (&lt;CommentListItem comment={c} key={c.id} />))
-
-    return (<div>{comments}</div>)
-  }
-  module.exports = Relay.createContainer(CommentsList, {
-    fragments: {
-      contentItem: () => Relay.QL`
-        fragment on Content {
-          id,
-          commentCount,
-          comments {
-            id,
-            ${ CommentListItem.getFragment('comment') }
-          }
-        }
-      `
-    }
-  })
-</code></pre>
-</section>
-
-<section>
-  <h1>Relay <heart /> </h1>
-  <p>Here's a reusable comment item Relay container</p>
-<pre style="height: 55vh"><code style="height: 55vh; max-height: unset">  function Comment(props) {
-    return (
-      &lt;div className="comment__container">
-        &lt;UserInfo user={props.comment.author} />
-        {props.comment.text}
-      &lt;/div>
-    )
-  }
-  module.exports = Relay.createContainer(CommentsList, {
-    fragments: {
-      comment: () => Relay.QL`
-        fragment on Comment {
-          id,
-          text,
-          author { ${ UserInfo.getFragment('user') } }
-        }
-      `
-    }
-  })
-</code></pre>
+  <h1>What's a tracing JIT?</h1>
+  <blockquote>
+    (...) This is done by recording <strong>a linear sequence of frequently executed operations</strong>, compiling them to native machine code and executing them. This is opposed to traditional just-in-time (JIT) compilers that work on a per-method basis.
+  </blockquote>
+  <p><a href=https://en.wikipedia.org/wiki/Tracing_just-in-time_compilation>(wikipedia)</a></p>
 </section>
 
 
 <section>
-  <h1>Relay <heart /> </h1>
-  <ul>
-    <li heart>Client and the Server can use it to get data from GraphQL</li>
-    <li heart>Your code will contain declarations of data you need</li>
-    <li heart>Built-in cache</li>
-    <li heart>Everything seems to be very easy to do</li>
-    <li fail>Serverside rendering not supported natively. <span style="color:gray">You'll need isomorphic-relay-router, isomorphic-relay, and react-router-relay.</span></li>
-    <li fail>As of today, using serverside rendering implies opting into a very fast memory leak.</li>
-    <li fail>Ties you into babel. 6.</li>
-  </ul>
+  <h1>How to tracing JIT?</h1>
+  <p>Let's look at <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Internals/Tracing_JIT">what mozilla did</a>
+  <img src="TraceStates.png" alt="" style="width: 100vw">
 </section>
 
 <section>
-  <h1>Relay <heart /> </h1>
-  <ul>
-    <li style="list-style: none">On the one hand...</li>
-    <li heart>Data just magically appears on the page for you to use</li>
-    <li class="fragment" style="list-style: none">On the other hand...</li>
-    <li fail class="fragment">Data just magically appears on the page for you to use</li>
-    <li class="fragment" style="list-style: none; color:gray;">The words "just" and "magically" should be triggering several alarms in your body right now</li>
-  </ul>
+  <h1>What does it look like?
 </section>
 
 <section>
-  <h1>Relay <heart /> gems</h1>
-  <ul>
-    <li heart>In a serverside rendered application, the initial graphQL request to render the page can be inlined in the HTML. Repetitive information (menus, content you've seen, etc) is never re-fetched.</li>
-  </ul>
-<pre><code>
-  &lt;script type="application/json">{Data to poison Relay's cache}&lt;/script>
-
-</code></pre>
-</section>
-
-<section>
-  <h1>Relay <heart /> gems</h1>
-  <ul>
-    <li heart>Both the server and the client do graphQL requests. These can be cached at the same point.</li>
-    <li heart class="fragment">Even though there is aggregation going on, thanks to the `query` mechanism, the requests that client Relay and server Relay perform for a certain piece of data, are exactly the same</li>
-    <li heart class="fragment">Meaning, they share the same cache keys. Meaning, easy cache clearing, and more cache space efficiency.</li>
-  </ul>
-</section>
-
-<section>
-  <h1>Relay <heart /> gems</h1>
-  <ul>
-    <li heart>This piece of code does a graphql request through Relay.</li>
-  </ul>
-  <pre><code>
-const queyGraphQL = (ql) => new Promise((resolve, reject) => {
-  const querySet = {
-    query: Relay.createQuery(ql, variables),
-  };
-  Relay.Store.primeCache(querySet, ({ done, error }) => {
-    if (done) {
-      const response = Relay.Store.readQuery(querySet.query);
-      resolve(response[0]);
-    }
-    if (error) {
-      reject(error);
-    }
-  });
-});
-  </code></pre>
-</section>
-
-<section>
-  <h1>Relay <heart /> gems</h1>
-  <ul>
-    <li heart>This piece of code performs a simple contract test to our graphQL backend.</li>
-  </ul>
-  <pre><code>
-it('should provide us with beautiful, beautiful data', () => {
-  return queryGraphQL(Relay.QL`
-    query {
-      content (path: "/actual/url/in/website") {
-        fieldWhichShouldBeTrue,
-        ${ LatestPrinted.getFragment('latestIssue') }
-      }
-    }
-  `).then((res) => {
-    fieldWhichShouldBeTrue.should.equal(true);
-  });
-});
-  </code></pre>
-</section>
-
-<section>
-  <h1>That memory leak we had <heart /></h1>
-  <ul>
-    <li heart>As soon as serverside rendering was implemented, we of course started using Relay on the server to fetch data.</li>
-    <li heart>We decided to bet on the Relay team supporting serverside rendering eventually</li>
-    <li heart>We got away with it because we had excellent devops.</li>
-  </ul>
-</section>
-
-<section>
-  <h1>In <heart /> conclusion</h1>
-  <p>What have I learned?</p>
-  <ul>
-    <li heart>Relay seems to have no impact on serverside performance even though it does so much magic, and GraphQL is very powerful and doesn't get in your way.</li>
-    <li heart>Apart from that memory leak, using these libraries in production was pretty uneventful.</li>
-    <li heart>Keyword there, uneventful. These libraries are pretty solid.</li>
-  </ul>
+  <img src="drawing-1.svg">
 </section>
 
 <section>
