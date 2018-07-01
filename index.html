@@ -167,7 +167,7 @@ heart::before {
 <section>
   <h1>How to tracing JIT?</h1>
   <p>Let's look at <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Internals/Tracing_JIT">what mozilla did</a>
-  <img src="TraceStates.png" alt="" style="width: 100vw">
+  <img src="TraceStates.png" alt="" style="width: 40vw !important; display: block; margin: auto">
 </section>
 
 <section>
@@ -175,7 +175,54 @@ heart::before {
 </section>
 
 <section>
-  <img src="drawing-1.svg">
+  <img src="drawing-1.svg.png">
+</section>
+
+<section>
+  <h1>Let's start with monitoring mode</h1>
+  <ul>
+    <li>We just wait for a backwards jump and increment a "hot" counter</li>
+    <li>If it's hot, then:</li>
+    <ul>
+      <li>If there's not a trace to execute, go to "recording" mode</li></li>
+      <li>If there is, execute that trace</li>
+    </ul>
+  </ul>
+  <p>(<code>433c798</code>)
+</section>
+
+<section>
+  <h1>Now for recording mode</h1>
+  <ul>
+    <li>We passively record what is being executed, except for non-conditional jumps</li>
+    <li>If we go over, say, 100 steps, we "abort" and go back to "monitoring"</li>
+    <li>If we see a conditional jump, we record a "guard"</li>
+    <li>If we get back to the beginning of the trace, we say we've "closed the loop", save the trace and go to "monitoring" mode</li>
+  </ul>
+  <p>(<code>ae7fe41</code>)
+</section>
+
+<section>
+  <h1>Let's take a break</h1>
+  <p>And refactor a bit. This vm.js file is getting big <p> And the compilation/execution part deserves its own file</p>
+  <p>(<code>185786b</code>)</p>
+</section>
+
+<section>
+  <h1>Tales from yore</h1>
+  <ul>
+    <li>We're gonna use a really old compiler called TCC (tiny C compiler)</li>
+    <li>It compiles and runs C if you give it the <code>-run</code> flag</li>
+  </ul>
+</section>
+
+<section>
+  <h1>Now for execution mode</h1>
+  <ul>
+    <li>When a recorded trace becomes hot, we store that recording</li>
+    <li>And we execute them, when "monitoring" mode finds a "hot" PC</li>
+  </ul>
+  <p>(<code>095039e</code>)
 </section>
 
 <section>
