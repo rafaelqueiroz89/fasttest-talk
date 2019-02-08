@@ -17,6 +17,7 @@
 
 <!-- Printing and PDF exports -->
 <script>
+// TO PRINT ADD ?print-pdf to address
 var link = document.createElement( 'link' );
 link.rel = 'stylesheet';
 link.type = 'text/css';
@@ -70,8 +71,8 @@ heart::before {
 <!-- Any section element inside of this container is displayed as a slide -->
 <div class="slides">
 <section>
-  <h1>How to create a new programming language</h1>
-  <h2>Complete with a tracing JIT</h2>
+  <h1>fasttest.io and why you should use it</h1>
+  <h2>A service for browser testing and automation</h2>
 </section>
 
 <section>
@@ -83,11 +84,21 @@ heart::before {
     <p><a href="http://github.com/fabiosantoscode">github.com/fabiosantoscode</a></p>
     <p><a href="http://npmjs.com/~fabiosantoscode">npmjs.com/~fabiosantoscode</a></p>
     <p><a href="http://frutal.pt">frutal.pt</a></p>
+    <p>Terser (new uglify-es) maintainer</p>
     <p>Freelancer</p>
-    <p>terser (new uglify-es) maintainer</p>
     <p><heart/> Likes JavaScript</p>
-    <p><heart/> Likes Building compilers</p>
+    <p><heart/> Building 12 apps this year</p>
   </div>
+</section>
+
+<section>
+  <h1>Sponsor Terser</h1>
+
+  <ul>
+    <li>Did you know you can sponsor the Terser minifier?</li>
+    <li>Maintaining terser is very hard and I appreciate every donation.</li>
+    <li>Gold supporter status available for brands. Talk to me after the talk if you think your employer is interested.</li>
+  </ul>
 </section>
 
 <section>
@@ -99,135 +110,22 @@ heart::before {
   </ul>
 </section>
 
-<section>
-  <h1>No CLI and REPL?</h1>
-  <p>No.
-  <p>Instead, I'll use <code>mocha</code> and TDD</p>
-</section>
+<!-- Main body of presentation -->
 
 <section>
-  <h1>Let's implement the parser</h1>
+  <h1>What about automation</h1>
+
   <ul>
-    <li>Usually you'd create a recursive descent parser (eg. acorn, uglifyJS)</li>
-    <li>Or use PEGJS or some variation of lex/yacc to generate a parser for you</li>
-    <li>Our language is so BASIC that we can write a parser without recursion (<code>e9f9fc3</code>)</li>
+    <li>Since selenium can do both testing and automation, I saw no reason not to implement a simple automation system.</li>
+    <li>All you have to do is return values from your test functions</li>
+    <li>Like so: <code>module.exports = { 'Simple Test': wind =&gt; wind.getTitle() }</code></li>
   </ul>
-</section>
-
-<section>
-  <h1>So simple?</h1>
-  <ul>
-    <li>This is a toy/example language</li>
-    <li>Usually there's separate tokenisation and parsing steps</li>
-    <li>And you would keep the line number and column associated so you can generate good stack traces</li>
-  </ul>
-</section>
-
-<section>
-  <h1>Let's start writing the VM part</h1>
-  <ul>
-    <li>We need to write a function that takes a single line of our parsed code and executes it</li>
-    <li>And a bunch of functions, one per instruction</li>
-    <li>The instruction can modify the state of the virtual machine (variables, current PC) so we pass the state to the instruction function
-    <p><code>7b7e3d6</code>, <code>71f67c7</code>
-  </ul>
-</section>
-
-<section>
-  <h1>Now let's execute our programs</h1>
-  <ul>
-    <li>We just create the starting VM state, then run each instruction inside a for loop (<code>8114317</code>)</li>
-  </ul>
-</section>
-
-<section>
-  <h1>Now for the tracing JIT part</h1>
-  <p>There's some theory here
-  <p><img src="breathing-intensifies.jpg"></p>
-</section>
-
-<section>
-  <h1>What's a tracing JIT?</h1>
-  <blockquote>
-    Tracing just-in-time compilation is a technique used by virtual machines to optimize the execution of a program at runtime. (...)
-  </blockquote>
-  <p><a href=https://en.wikipedia.org/wiki/Tracing_just-in-time_compilation>(wikipedia)</a></p>
-</section>
-
-<section>
-  <h1>What's a tracing JIT?</h1>
-  <blockquote>
-    (...) This is done by recording <strong>a linear sequence of frequently executed operations</strong>, compiling them to native machine code and executing them. This is opposed to traditional just-in-time (JIT) compilers that work on a per-method basis.
-  </blockquote>
-  <p><a href=https://en.wikipedia.org/wiki/Tracing_just-in-time_compilation>(wikipedia)</a></p>
-</section>
-
-
-<section>
-  <h1>How to tracing JIT?</h1>
-  <p>Let's look at <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Internals/Tracing_JIT">what mozilla did</a>
-  <img src="TraceStates.png" alt="" style="width: 40vw !important; display: block; margin: auto">
-</section>
-
-<section>
-  <h1>What does it look like?
-</section>
-
-<section>
-  <img src="drawing-1.svg.png">
-</section>
-
-<section>
-  <h1>Let's start with monitoring mode</h1>
-  <ul>
-    <li>We just wait for a backwards jump and increment a "hot" counter</li>
-    <li>If it's hot, then:</li>
-    <ul>
-      <li>If there's not a trace to execute, go to "recording" mode</li></li>
-      <li>If there is, execute that trace</li>
-    </ul>
-  </ul>
-  <p>(<code>433c798</code>)
-</section>
-
-<section>
-  <h1>Now for recording mode</h1>
-  <ul>
-    <li>We passively record what is being executed, except for non-conditional jumps</li>
-    <li>If we go over, say, 100 steps, we "abort" and go back to "monitoring"</li>
-    <li>If we see a conditional jump, we record a "guard"</li>
-    <li>If we get back to the beginning of the trace, we say we've "closed the loop", save the trace and go to "monitoring" mode</li>
-  </ul>
-  <p>(<code>ae7fe41</code>)
-</section>
-
-<section>
-  <h1>Let's take a break</h1>
-  <p>And refactor a bit. This vm.js file is getting big <p> And the compilation/execution part deserves its own file</p>
-  <p>(<code>185786b</code>)</p>
-</section>
-
-<section>
-  <h1>Tales from yore</h1>
-  <ul>
-    <li>We're gonna use a really old compiler called TCC (tiny C compiler)</li>
-    <li>It compiles and runs C if you give it the <code>-run</code> flag</li>
-  </ul>
-</section>
-
-<section>
-  <h1>Now for execution mode</h1>
-  <ul>
-    <li>When a recorded trace becomes hot, we store that recording</li>
-    <li>And we execute them, when "monitoring" mode finds a "hot" PC</li>
-  </ul>
-  <p>(<code>095039e</code>)
 </section>
 
 <section>
   <h2>The end.</h2>
   <p>Questions?</p>
-  <p>(code available on <a href="https://github.com/fabiosantoscode/live-jit-2">https://github.com/fabiosantoscode/live-jit-2</a>)</p>
+  <p>(this talk available on <a href="https://github.com/fabiosantoscode/fasttest-talk">https://github.com/fabiosantoscode/fasttest-talk</a>)</p>
 </section>
 
 </div>
