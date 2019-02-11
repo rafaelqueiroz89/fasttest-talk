@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>reveal.js – The HTML Presentation Framework</title>
+<title>Fastest.io – Automation done with ease</title>
 <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
 <meta name="author" content="Hakim El Hattab">
 
@@ -17,118 +17,129 @@
 
 <!-- Printing and PDF exports -->
 <script>
-// TO PRINT ADD ?print-pdf to address
-var link = document.createElement( 'link' );
-link.rel = 'stylesheet';
-link.type = 'text/css';
-link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-document.getElementsByTagName( 'head' )[0].appendChild( link );
+  // TO PRINT ADD ?print-pdf to address
+  var link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+  document.getElementsByTagName('head')[0].appendChild(link);
 </script>
 
 <style>
-code {
-  background: #111;
-  border-radius: 0.5vh;
-  font-size: 0.9em !important;
-  padding: 0.1em 0.25em !important;
-}
-li[heart] {
-  list-style: none;
-  margin-left: -1em;
-}
-li[heart]::before {
-  content: '♥';
-  margin-right: 0.42em;
-  color: #ee1111;
-}
-li[fail] {
-  list-style: none;
-  margin-left: -1em;
-}
-li[fail]::before {
-  content: '×';
-  font-weight: bold;
-  margin-right: 0.42em;
-}
-heart {
-  display: inline;
-}
-heart::before {
-  content: '♥';
-  color: #ee1111;
-}
-@media print {
-  section * {
-    color: #000 !important
+  code {
+    background: #111;
+    border-radius: 0.5vh;
+    font-size: 0.9em !important;
+    padding: 0.1em 0.25em !important;
   }
-  section code {
-    color: #FFF !important
+
+  li[heart] {
+    list-style: none;
+    margin-left: -1em;
   }
-}
+
+    li[heart]::before {
+      content: '♥';
+      margin-right: 0.42em;
+      color: #ee1111;
+    }
+
+  li[fail] {
+    list-style: none;
+    margin-left: -1em;
+  }
+
+    li[fail]::before {
+      content: '×';
+      font-weight: bold;
+      margin-right: 0.42em;
+    }
+
+  heart {
+    display: inline;
+  }
+
+    heart::before {
+      content: '♥';
+      color: #ee1111;
+    }
+
+  @media print {
+    section * {
+      color: #000 !important
+    }
+
+    section code {
+      color: #FFF !important
+    }
+  }
 </style>
 
 <div class="reveal">
-<!-- Any section element inside of this container is displayed as a slide -->
-<div class="slides">
-<section>
-  <h1>fasttest.io and why you should use it</h1>
-  <h2>A service for browser testing and automation</h2>
-</section>
+  <!-- Any section element inside of this container is displayed as a slide -->
+  <div class="slides">
+    <section>
+      <h1>fasttest.io and why you should use it</h1>
+      <h2>A service for browser testing and automation</h2>
+    </section>
 
-<section>
-  <h1>I'm Fábio</h1>
-  <div style="float: left; width: 50%">
-    <img src="fabio.jpg" style="width: 80%; margin-top: 0.65em">
+    <section>
+      <h1>I'm Fábio</h1>
+      <div style="float: left; width: 50%">
+        <img src="fabio.jpg" style="width: 80%; margin-top: 0.65em">
+      </div>
+      <div style="float:left; text-align: left; width: 50%; font-size: 0.8em">
+        <p><a href="http://github.com/fabiosantoscode">github.com/fabiosantoscode</a></p>
+        <p><a href="http://npmjs.com/~fabiosantoscode">npmjs.com/~fabiosantoscode</a></p>
+        <p><a href="http://frutal.pt">frutal.pt</a></p>
+        <p>Terser (new uglify-es) maintainer</p>
+        <p>Freelancer</p>
+        <p><heart /> Likes JavaScript</p>
+        <p><heart /> Building 12 apps this year</p>
+      </div>
+    </section>
+ 
+    <!-- Main body of presentation -->
+
+    <section>
+      <h1>What about automation</h1>
+      <ul>
+        <li>Since selenium can do both testing and automation, I saw no reason not to implement a simple automation system.</li>
+        <li>All you have to do is return values from your test functions</li>
+        <li>Like so: <code>module.exports = { 'Simple Test': wind =&gt; wind.getTitle() }</code></li>
+      </ul>
+    </section>
+    <section>
+      <h1>Keep it stupid simple</h1>
+      <ul>
+        <li>With Fastest.io you can test all DOM elements of a webpage</li>
+        <li>It is always asynchronous! You don't have to worry about <code>async / await</code> words </li>
+        <li>You can have more than one test in a single in a single javascript file and by doing it so you can have more than one test scenario</li>
+      </ul>
+    </section>
+    <section>
+      <h1>Test in every web driver available</h1>
+      <ul>
+        <li>With the directive <code>--browser jsdom</code> you can run tests in the jsdom enviorment</li>
+        <li>It is the most cheapest memory consuming web driver available</li>
+        <li>But it will support Google Chrome webdriver and others..</li>
+      </ul>
+    </section>
+    <section>
+      <h1>Is it free?</h1>
+      <ul>
+        <li>It is free for now</li>
+        <li>But if it reaches a large amount of active users it might turn into a pay-per-use service </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Usage example</h2>
+      <p>Questions?</p>
+      <p>(this talk available on <a href="https://github.com/fabiosantoscode/fasttest-talk">https://github.com/fabiosantoscode/fasttest-talk</a>)</p>
+    </section>
+
   </div>
-  <div style="float:left; text-align: left; width: 50%; font-size: 0.8em">
-    <p><a href="http://github.com/fabiosantoscode">github.com/fabiosantoscode</a></p>
-    <p><a href="http://npmjs.com/~fabiosantoscode">npmjs.com/~fabiosantoscode</a></p>
-    <p><a href="http://frutal.pt">frutal.pt</a></p>
-    <p>Terser (new uglify-es) maintainer</p>
-    <p>Freelancer</p>
-    <p><heart/> Likes JavaScript</p>
-    <p><heart/> Building 12 apps this year</p>
-  </div>
-</section>
-
-<section>
-  <h1>Sponsor Terser</h1>
-
-  <ul>
-    <li>Did you know you can sponsor the Terser minifier?</li>
-    <li>Maintaining terser is very hard and I appreciate every donation.</li>
-    <li>Gold supporter status available for brands. Talk to me after the talk if you think your employer is interested.</li>
-  </ul>
-</section>
-
-<section>
-  <h1>Let's get started</h1>
-
-  <ul>
-    <li>To create a language, you need to write a REPL and a CLI interface</li>
-    <li>Those, I'll leave as an exercise to the reader.
-  </ul>
-</section>
-
-<!-- Main body of presentation -->
-
-<section>
-  <h1>What about automation</h1>
-
-  <ul>
-    <li>Since selenium can do both testing and automation, I saw no reason not to implement a simple automation system.</li>
-    <li>All you have to do is return values from your test functions</li>
-    <li>Like so: <code>module.exports = { 'Simple Test': wind =&gt; wind.getTitle() }</code></li>
-  </ul>
-</section>
-
-<section>
-  <h2>The end.</h2>
-  <p>Questions?</p>
-  <p>(this talk available on <a href="https://github.com/fabiosantoscode/fasttest-talk">https://github.com/fabiosantoscode/fasttest-talk</a>)</p>
-</section>
-
-</div>
 
 </div>
 
@@ -136,24 +147,24 @@ heart::before {
 <script src="js/reveal.js"></script>
 
 <script>
-// Full list of configuration options available at:
-// https://github.com/hakimel/reveal.js#configuration
-Reveal.initialize({
-  controls: true,
-  progress: true,
-  history: true,
-  center: true,
+  // Full list of configuration options available at:
+  // https://github.com/hakimel/reveal.js#configuration
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
 
-  transition: 'slide', // none/fade/slide/convex/concave/zoom
+    transition: 'slide', // none/fade/slide/convex/concave/zoom
 
-  // Optional reveal.js plugins
-  dependencies: [
-    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-    { src: 'plugin/zoom-js/zoom.js', async: true },
-    { src: 'plugin/notes/notes.js', async: true }
-  ]
-});
+    // Optional reveal.js plugins
+    dependencies: [
+      { src: 'lib/js/classList.js', condition: function () { return !document.body.classList; } },
+      { src: 'plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+      { src: 'plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+      { src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+      { src: 'plugin/zoom-js/zoom.js', async: true },
+      { src: 'plugin/notes/notes.js', async: true }
+    ]
+  });
 </script>
