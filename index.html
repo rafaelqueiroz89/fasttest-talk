@@ -79,7 +79,7 @@
   <!-- Any section element inside of this container is displayed as a slide -->
   <div class="slides">
     <section>
-      <h1>fasttest.io and why you should use it</h1>
+      <h1>fasttest.io, how it works and how to use it to bring your e2e tests to the next level</h1>
       <h2>A service for browser testing and automation</h2>
     </section>
 
@@ -89,61 +89,50 @@
         <img src="fabio.jpg" style="width: 80%; margin-top: 0.65em">
       </div>
       <div style="float:left; text-align: left; width: 50%; font-size: 0.8em">
+        <p><a href="http://frutal.pt">frutal.pt</a></p>
         <p><a href="http://github.com/fabiosantoscode">github.com/fabiosantoscode</a></p>
         <p><a href="http://npmjs.com/~fabiosantoscode">npmjs.com/~fabiosantoscode</a></p>
-        <p><a href="http://frutal.pt">frutal.pt</a></p>
-        <p>Terser (new uglify-es) maintainer</p>
+        <p><a href="http://patreon.com/fabiosantoscode">patreon.com/fabiosantoscode</a> <heart/></p>
+        <p>Terser (new UglifyJS) maintainer</p>
         <p>Freelancer</p>
-        <p><heart /> Likes JavaScript</p>
-        <p><heart /> Building 12 apps this year</p>
+        <p><heart/> Likes JavaScript</p>
+        <p><heart/> Building 12 apps this year</p>
       </div>
+    </section>
+
+    <section>
+      <h1>Let's get started</h1>
     </section>
 
     <!-- Main body of presentation -->
 
     <section>
-      <h1>What about automation</h1>
-      <ul>
-        <li>Since selenium can do both testing and automation, I saw no reason not to implement a simple automation system.</li>
-        <li>All you have to do is return values from your test functions</li>
-        <li>Like so: <code>module.exports = { 'Simple Test': wind =&gt; wind.getTitle() }</code></li>
-      </ul>
-    </section>
-    <section>
       <h1>Keep it stupid simple</h1>
       <ul>
         <li>With Fastest.io you can test all DOM elements of a webpage</li>
-        <li>It is always asynchronous! You don't have to worry about <code>async / await</code> words </li>
+        <li>If you call async functions, you don't have to type await as long as you're in the test function. Functions nested within don't have this, as it would break <code>[].map</code></li>
         <li>You can have more than one test in a single in a single javascript file and by doing it so you can have more than one test scenario</li>
       </ul>
     </section>
+
     <section>
-      <h1>Test in every web driver available</h1>
+      <h1>Use those browsers</h1>
       <ul>
-        <li>With the directive <code>--browser jsdom</code> you can run tests in the jsdom enviorment</li>
-        <li>It is the most cheapest memory consuming web driver available</li>
-        <li>But it will support Google Chrome webdriver and others..</li>
+        <li>With the directive <code>--browser jsdom</code> you can run tests in the jsdom environment, same for chrome</li>
       </ul>
     </section>
-    <section>
-      <h1>Is it free?</h1>
-      <ul>
-        <li>It is free for now</li>
-        <li>But if it reaches a large amount of active users it might turn into a pay-per-use service </li>
-      </ul>
-    </section>
+
     <section>
       <h1>Time for a live demo</h1>
-        <img src="img/breathing-intensifies.jpg" />
+      <img src="img/breathing-intensifies.jpg" />
     </section>
 
     <section>
       <h1>Questions?</h1>
-      <p>(this talk available on <a href="https://github.com/fabiosantoscode/fasttest-talk">https://github.com/fabiosantoscode/fasttest-talk</a>)</p>
+      <p style="color: gray"><small>(this talk available on <a href="https://github.com/fabiosantoscode/fasttest-talk">https://github.com/fabiosantoscode/fasttest-talk</a>)</small></p>
     </section>
 
   </div>
-
 </div>
 
 <script src="lib/js/head.min.js"></script>
