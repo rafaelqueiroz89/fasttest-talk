@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <meta charset="utf-8">
 <title>Fastest.io – Automation done with ease</title>
 <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
@@ -92,11 +92,11 @@
         <p><a href="http://frutal.pt">frutal.pt</a></p>
         <p><a href="http://github.com/fabiosantoscode">github.com/fabiosantoscode</a></p>
         <p><a href="http://npmjs.com/~fabiosantoscode">npmjs.com/~fabiosantoscode</a></p>
-        <p><a href="http://patreon.com/fabiosantoscode">patreon.com/fabiosantoscode</a> <heart/></p>
+        <p><a href="http://patreon.com/fabiosantoscode">patreon.com/fabiosantoscode</a> <heart /></p>
         <p>Terser (new UglifyJS) maintainer</p>
         <p>Freelancer</p>
-        <p><heart/> Likes JavaScript</p>
-        <p><heart/> Building 12 apps this year</p>
+        <p><heart /> Likes JavaScript</p>
+        <p><heart /> Building 12 apps this year</p>
       </div>
     </section>
 
@@ -119,6 +119,50 @@
       <h1>Use those browsers</h1>
       <ul>
         <li>With the directive <code>--browser jsdom</code> you can run tests in the jsdom environment, same for chrome</li>
+      </ul>
+    </section>
+
+    <section>
+      <h1>Installation is easy</h1>
+      <ul>
+        <li>Just type <code>npm install fasttest -g</code></li>
+        <li>And you are good to go!</li>
+      </ul>
+    </section>
+
+    <section>
+      <h1>Setup your tests</h1>
+      <ul>
+        <li>Create a javascript file for every test scenario you want</li>
+        <li>Add as many tests as you want in that file</li>
+      </ul>
+    </section>
+
+    <section>
+      <h1>Run your tests</h1>
+      <ul>
+        <li>
+          Type <code>fasttest testfile.js¹ --base-url² http://example.com³</code>
+        </li>
+        <li>¹ it is your test file</li>
+        <li>² it is the base url for your testing, you can have different base URLs and have the same tests in staging or production enviorments</li>
+        <li>³ it is your base url</li>
+      </ul>
+    </section>
+
+    <section>
+      <h1>Do more and code less</h1>
+      <ul>
+        <li>Our first example will compare the value of a HTML header h1</li>
+        <li>We want to assert that the <code>h1</code> value is the same as we are expecting as a result of the test</li>
+        <code>
+          module.exports = {<br />
+          'Example Test': wind => {<br />
+          let heading = wind.getElement('h1').getText()<br />
+          return heading
+          }
+        </code>
+        <li>It will return <code>passed</code> or <code>not passed</code></li>
       </ul>
     </section>
 
